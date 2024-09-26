@@ -1,0 +1,44 @@
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Songs in Playlist: <%= playlist.name %></h1>
+        </header>
+
+        <main>
+            <% if (songs.length > 0) { %>
+                <ol>
+                    <% songs.forEach((song, index) => { %>
+                        <li>
+                            <strong><%= song.title %></strong> by <%= song.artist %> 
+                            <button onclick="playSong('<%= song.id %>')">Play</button>
+                            <form action="/playlists/<%= playlistId %>/remove/<%= song.id %>" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Are you sure you want to remove this song from the playlist?')">Remove</button>
+                            </form>
+                        </li>
+                    <% }) %>
+                </ol>
+            <% } else { %>
+                <p>No songs available in this playlist.</p>
+            <% } %>
+        </main>
+        <button class="back-button"><a href="/">Back to Home</a></button>
+
+    </div>
+
+    <script>
+        function playSong(songId) {
+            const audio = document.getElementById('audio-player');
+            audio.src = `/api/songs/play/${songId}`;
+            audio.play();
+        }
+    </script>
+
+    <div id="player">
+        <audio id="audio-player" controls>
+            <source id="audio-source" src="" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+</body>
+</html>

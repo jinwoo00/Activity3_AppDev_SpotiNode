@@ -1,0 +1,100 @@
+
+
+    <main class="container">
+
+        <!-- Form to add a new song -->
+        <section class="form-section">
+            <form id="add-song-form" action="/add-song" method="POST" enctype="multipart/form-data">
+                <h2>Add a New Song</h2>
+                <label for="title">Title:</label>
+                <input type="text" name="title" required>
+                
+                <label for="artist">Artist:</label>
+                <input type="text" name="artist" required>
+                
+                <label for="album">Album:</label>
+                <input type="text" name="album">
+                
+                <label for="genre">Genre:</label>
+                <input type="text" name="genre">
+                
+                <label for="file">Audio File:</label>
+                <input type="file" name="file" accept="audio/*" required>
+                
+                <button type="submit">Add Song</button>
+            </form>
+        </section>
+        
+        <!-- Form to create a new playlist -->
+        <section class="form-section">
+            <form action="/create-playlist" method="POST">
+                <h2>Create a New Playlist</h2>
+                <label for="name">Playlist Name:</label>
+                <input type="text" name="name" required>
+                
+                <label for="description">Description:</label>
+                <textarea name="description" rows="3"></textarea>
+                
+                <div class="button-container">
+                    <button type="submit">Create Playlist</button>
+                    <button type="button" onclick="window.location.href='/playlists'" class="view-playlists-button">View Playlists</button>
+                </div>
+            </form>
+            
+        </section>
+
+        <!-- Main section for displaying songs -->
+<section id="song-list">
+    <h2>Available Songs</h2>
+    <% if (songs.length > 0) { %>
+        <ol>
+            <% songs.forEach((song, index) => { %>
+                <li>
+                    <div class="song-info">
+                        <h3><%= song.title %> - <%= song.artist %></h3>
+                        <p><strong>Album:</strong> <%= song.album %>, <strong>Genre:</strong> <%= song.genre %></p>
+                    </div>
+                    <div class="song-actions">
+                        <form action="/add-to-playlist" method="POST" style="display:inline;">
+                            <label for="playlist">Add to Playlist:</label>
+                            <select name="playlist_id" required>
+                                <% playlists.forEach(playlist => { %>
+                                    <option value="<%= playlist.id %>"><%= playlist.name %></option>
+                                <% }) %>
+                            </select>
+                            <input type="hidden" name="song_id" value="<%= song.id %>">
+                            <button type="submit">+</button>
+                        </form>
+                        <button onclick="playSong('<%= song.id %>')">Play</button>
+                        <form action="/delete-song/<%= song.id %>" method="POST" style="display:inline;">
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this song?')">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            <% }) %>
+        </ol>
+    <% } else { %>
+        <p>No songs available</p>
+    <% } %>
+</section>
+
+        <!-- Input for playing music from a link -->
+        <section id="link-player">
+            <h2>Play Music from Link</h2>
+            <input type="text" id="music-link" placeholder="Paste your music link here" />
+            <button id="play-button">Play</button>
+        </section>
+
+        <!-- Audio player -->
+        <section id="player">
+            <audio id="audio-player" controls>
+                <source id="audio-source" src="" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </section>
+
+    </main>
+
+    <script src="/script.js"></script> <!-- Include your JS file -->
+</body>
+</html>
